@@ -45,8 +45,9 @@ setup(name="abnet2",
       tests_require=['pytest'],
       cmdclass={'test': PyTest},
       
-      # TODO: List of packages that this one depends upon:   
-      install_requires=['numpy', 'theano', 'lasagne'],
+      # TODO: List of packages that this one depends upon:
+      dependency_links = ['http://github.com/bootphon/spectral/tarball/master#egg=spectral-bootphon'],
+      install_requires=['numpy', 'theano', 'lasagne', 'spectral-bootphon'],
       # TODO: List executable scripts, provided by the package (this is just an example)
       entry_points={
         'console_scripts': 

@@ -9,6 +9,11 @@ import lasagne.objectives
 import time
 import copy
 
+
+# TODO: save all distances calculated for the validation data
+# so that this matrix can be re-used for computing auc/eer
+
+
 epsilon = np.finfo(np.float32).eps
 
 def iterate_minibatches(inputs, batchsize=1000, shuffle=False):
