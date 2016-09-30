@@ -9,6 +9,11 @@ import lasagne.objectives
 import time
 import copy
 
+
+# TODO: save all distances calculated for the validation data
+# so that this matrix can be re-used for computing auc/eer
+
+
 epsilon = np.finfo(np.float32).eps
 
 def iterate_minibatches(inputs, batchsize=1000, shuffle=False):
@@ -73,7 +78,7 @@ def train(data_train, data_val, train_fn, val_fn, network, max_epochs=100, patie
     best_model = None
     if patience <= 0:
         patience = max_epochs
-    patiance_val = 0
+    patience_val = 0
     best_val = None
     
     for epoch in range(max_epochs):
@@ -175,7 +180,7 @@ class Classifier_Nnet(object):
         train([X_train, y_train], [X_val, y_val], train_batch, val_batch,
               self.network, max_epochs=max_epochs, patience=patience)
 
-    def evaluate(X_test):
+    def evaluate(self, X_test):
         for batch in iterate_minibatches([X_test], 500, shuffle=False):
             return self.test_prediction(*batch)
 
@@ -183,7 +188,7 @@ class Classifier_Nnet(object):
         test_err = 0
         test_acc = 0
         test_batches = 0
-        for batch in iterate_minibatches(X_test, y_test, 500, shuffle=False):
+        for batch in iterate_minibatches(X_test, Y_test, 500, shuffle=False):
             inputs, targets = batch
             err, acc = self.val_fn(inputs, targets)
             test_err += err
