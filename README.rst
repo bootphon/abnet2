@@ -15,9 +15,20 @@ Python package for using siamese neural network (ABnet) in speech processing.
 Installation
 ------------
 
-The easiest way to install most Python packages is via ``easy_install`` or ``pip``::
+We assume you are using a conda virtual environment. First clone the ``abnet2`` package from github::
 
-    $ easy_install abnet2
+  git clone git@github.com:bootphon/abnet2.git
+  cd abnet2
+
+Then install its dependencies (here using conda, but it works with pip as well)::
+
+  conda install numpy theano lasagne cython
+
+Finally install the ``abnet2`` package itself::
+
+  python setup.py build
+  python setup.py install
+
 
 Usage
 -----

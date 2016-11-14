@@ -1,15 +1,17 @@
-'''
-abnet2: Siamese Neural Network for speech
+'''abnet2: Siamese Neural Network for speech
 
-Note that "python setup.py test" invokes pytest on the package. With appropriately
-configured setup.cfg, this will check both xxx_test modules and docstrings.
+Note that "python setup.py test" invokes pytest on the package. With
+appropriately configured setup.cfg, this will check both xxx_test
+modules and docstrings.
 
 Copyright 2016, Roland Thiolliere.
 Licensed under GPLv3.
+
 '''
 import sys
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
+
 
 # This is a plug-in for setuptools that will invoke py.test
 # when you run python setup.py test
@@ -20,7 +22,9 @@ class PyTest(TestCommand):
         self.test_suite = True
 
     def run_tests(self):
-        import pytest  # import here, because outside the required eggs aren't loaded yet
+        # import here, because outside the required eggs aren't loaded
+        # yet
+        import pytest
         sys.exit(pytest.main(self.test_args))
 
 
@@ -30,11 +34,12 @@ setup(name="abnet2",
       version=version,
       description="Siamese Neural Network for speech",
       long_description=open("README.rst").read(),
-      classifiers=[ # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'Development Status :: 1 - Planning',
-        'Programming Language :: Python'
-      ],
-      keywords="", # Separate with spaces
+      classifiers=[
+          # Get strings from
+          # http://pypi.python.org/pypi?%3Aaction=list_classifiers
+          'Development Status :: 1 - Planning',
+          'Programming Language :: Python'],
+      keywords="",  # Separate with spaces
       author="Roland Thiolliere",
       author_email="rolthiolliere@gmail.com",
       url="",
@@ -44,13 +49,17 @@ setup(name="abnet2",
       zip_safe=False,
       tests_require=['pytest'],
       cmdclass={'test': PyTest},
-      
+
       # TODO: List of packages that this one depends upon:
-      dependency_links = ['http://github.com/bootphon/spectral/tarball/master#egg=spectral-bootphon'],
-      install_requires=['numpy', 'theano', 'lasagne', 'spectral-bootphon'],
-      # TODO: List executable scripts, provided by the package (this is just an example)
+      dependency_links=[
+          'https://github.com/bootphon/spectral/tarball/master'
+          '#egg=spectral'],
+      install_requires=[
+          'cython', 'numpy', 'theano', 'lasagne', 'spectral'],
+
+      # TODO: List executable scripts, provided by the package (this
+      # is just an example)
       entry_points={
-        'console_scripts': 
-            ['abnet2=abnet2:main']
+        'console_scripts': ['abnet2=abnet2:main']
       }
 )
