@@ -16,6 +16,7 @@ import copy
 
 epsilon = np.finfo(np.float32).eps
 
+
 def iterate_minibatches(inputs, batchsize=1000, shuffle=False):
     """Generate mini batches from datasets
     """
@@ -80,7 +81,7 @@ def train(data_train, data_val, train_fn, val_fn, network, max_epochs=100, patie
         patience = max_epochs
     patience_val = 0
     best_val = None
-    
+
     for epoch in range(max_epochs):
         start_time = time.time()
         train_err, val_err = train_iteration(data_train, data_val,
@@ -286,7 +287,7 @@ class ABnet(object):
             [self.input_var1, self.input_var2, self.target_var],
             [self.test_loss])
         self.eval_fn = theano.function(
-            [self.input_var1], self.test_prediction1)        
+            [self.input_var1], self.test_prediction1)
 
     def train(self, X_train1, X_train2, y_train, X_val1, X_val2, y_val, max_epochs=500, patience=20):
         def train_batch(batch_data):
@@ -354,7 +355,7 @@ class ABnet(object):
         else:
             distances = distances[0]
         return distances
-    
+
     def auc(self, X1, X2, y):
         """Area under the ROC curve
         returns (auc * 2 - 1) * 100 (effective score in percent,
@@ -381,7 +382,7 @@ class ABnet(object):
 
     # def pretrain_AE(self, AE=1, nonlinearity=None):
     #     """Pretrain with autoencoder
-        
+
     #     Parameters:
     #     ----------
     #     AE: str or int, number of additional hidden layers before output,
@@ -408,7 +409,7 @@ class ABnet(object):
     #                 ae_network, num_units=dim,
     #                 W=lasagne.init.GlorotUniform(),
     #                 nonlinearity=nonlinearity)
-            
+
     #     ae_params = layers.get_all_params(ae_network, trainable=True)
     #     ae_prediction = layers.get_output(ae_network)
     #     ae_loss = T.mean((ae_prediction - self.input_var1).norm(2, axis=-1))
@@ -416,7 +417,7 @@ class ABnet(object):
     #     ae_train = theano.function(self.input_var1, ae_loss,
     #                                updates=ae_updates)
     #     ae_val = theano.function(self.input_var1, ae_loss)
-        
+
     #     def train_batch(batch_data):
     #         return self.train_fn(*batch_data)
     #     def val_batch(batch_data):
@@ -460,7 +461,7 @@ def loss_fn(prediction1, prediction2, targets, loss='cosine_margin', margin=0.15
     elif loss == 'coscos2':
         cos_sim_same = 1.-T.sqrt(cos_sim)
         cos_sim_diff = cos_sim ** 2
-        
+
     # elif loss == 'euclidian_margin':
     #     x0 = margin
     #     cos_sim_diff = T.switch(eucl_dist > x0, 0, (1 - eucl_dist - x0) / (1 - x0))

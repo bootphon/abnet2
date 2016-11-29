@@ -2,7 +2,7 @@ from __future__ import division, print_function
 import numpy as np
 # import gmpy
 from collections import namedtuple
-from dtw import DTW
+from dtw import DTW  # install it from https://github.com/syhw/DTW_Cython
 from ABXpy.distances.metrics.cosine import cosine_distance
 from time import time
 import h5py
@@ -109,7 +109,7 @@ def get_speaker(fname):
 def read_word_clusters_file(word_clusters_file, min_number_phones=4):
     """Read a word clusters file and output a list of words, a
     dictionnary of clusters and the number of possible pairs
-    
+
     Parameters:
     ----------
     word_clusters_file: str, filename of the words file (see module doc)
@@ -317,7 +317,7 @@ def get_same_data(pairs_list, mfccs_file, stacked_fbanks_file,
 
     The indexes returned correspond to indexes in the stacked fbanks
     features file. Otherwise it will return stacked filterbanks features.
-    
+
     Parameters:
     ----------
     pairs_list: list, list of pairs of words
@@ -383,7 +383,7 @@ def get_diff_data(pairs_list, stacked_fbanks_file,
     Otherwise it will return stacked filterbanks features
 
     Alignement here is just taking the diagonal.
-    
+
     Parameters:
     ----------
     pairs_list: list, list of pairs of words
