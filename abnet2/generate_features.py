@@ -155,7 +155,7 @@ def mean_variance_normalisation(h5f, mvn_h5f, vad=None):
 
 def h5features_feats2stackedfeats(fb_h5f, stackedfb_h5f, nframes=7):
     """Create stacked features version of h5features file
-    
+
     Parameters:
     ----------
     fb_h5f: str. h5features file name
@@ -208,7 +208,7 @@ def generate_all(files, alignement_h5f, input_h5f,
         # generate stacked mvn fbanks:
         h5features_compute(files, fb_h5f, featfunc=do_fbank)
         mean_variance_normalisation(fb_h5f, fb_mvn_h5f, vad=vad)
-        h5features_feats2stackedfeats(fb_mvn_h5f, input_h5f)
+        h5features_feats2stackedfeats(fb_mvn_h5f, input_h5f, nframes=nframes)
     finally:
         try_remove(fb_h5f)
         try_remove(fb_mvn_h5f)
