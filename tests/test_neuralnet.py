@@ -19,14 +19,11 @@ import abnet2
 
 
 def read_alignment(alignment_file='data/alignment.txt'):
-    ''' read the alignement file in format ... 
-    
-    the function will return 
-    
+    '''read the alignement file in format, the function will return
+
     labels: dictionary with the phoneme as a key
             and the values the element number
-    
-    alignments: list 
+    alignments: list
     '''
     labels = set()
     alignments = {}
@@ -50,11 +47,12 @@ def stack_fbanks(features, n):
                     for i in xrange(n-1)] + [features[n-1:]])
     return np.reshape(np.swapaxes(aux, 0, 1), (-1, dim * n))
 
-def load_data():
+
+def load_data(fbanks_file='data/fbanks.npz'):
     '''load the alignment file and the precomputed filterbanks for this experiment'''
     labels, alignments = read_alignment()
     y = []
-    fbanks = np.load('data/fbanks.npz')
+    fbanks = np.load(fbanks_file)
     stacked_fbanks = []
     for f in fbanks:
         stacked_fbanks.append(stack_fbanks(fbanks[f], 5))
@@ -70,11 +68,19 @@ def load_data():
     print('shape X = {} \t \t shape y = {}'.format(X.shape, y.shape))
     return X, y
 
+
 def mdelta(X):
     ''' split data in train and test datatsets '''
-    # TODO: use instead sklearn train_test_split, see http://goo.gl/haLYso 
-    X_train1, X_train2, X_val1, X_val2 = np.vstack((X[:-5001], X[:-5100])), np.vstack((X[1:-5000], X[100:-5000])), np.vstack((X[-5000:-1], X[-5000:-100])), np.vstack((X[-4999:], X[-4900:]))
-    y_train, y_val = np.concatenate((np.ones((X.shape[0]-5001,), dtype='int32'), np.zeros((X.shape[0]-5100,), dtype='int32'))), np.concatenate((np.ones((4999), dtype='int32'), np.zeros((4900,), dtype='int32')))
+    # TODO: use instead sklearn train_test_split, see http://goo.gl/haLYso
+    X_train1, X_train2, X_val1, X_val2 = np.vstack((X[:-5001], X[:-5100])),
+                                np.vstack((X[1:-5000], X[100:-5000])),
+                                np.vstack((X[-5000:-1], X[-5000:-100])),
+                                np.vstack((X[-4999:], X[-4900:]))
+
+    y_train, y_val = np.concatenate((np.ones((X.shape[0]-5001,), dtype='int32'),
+                                np.zeros((X.shape[0]-5100,), dtype='int32'))),
+                                np.concatenate((np.ones((4999), dtype='int32'),
+                                np.zeros((4900,), dtype='int32')))
 
     return X_train1, X_train2, y_train, X_val1, X_val2, y_val
 
@@ -97,7 +103,8 @@ if __name__ == '__main__':
     nnet = abnet2.ABnet([200, 200, 58])
 
     print("Starting training...")
-    nnet.train(X_train1, X_train2, y_train, X_val1, X_val2, y_val, max_epochs=100, patience=5)
+    nnet.train(X_train1, X_train2, y_train, X_val1, X_val2, y_val,
+               max_epochs=100, patience=5)
     # with open('abnet.pickle', 'w') as fout:
     #     pickle.dump(nnet, fout)
     # with open('abnet.pickle') as fin:
@@ -107,4 +114,3 @@ if __name__ == '__main__':
         print np.shape(X[f])
         embs = nnet.evaluate(X[f])
         np.save('embs/'+f, embs)
-
