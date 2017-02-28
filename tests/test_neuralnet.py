@@ -1,22 +1,35 @@
-import numpy as np
+#!/usr/bin/env python
+
+'''
+Example of use of abnet2
+'''
+
 from glob import glob
 import os.path as path
-import abnet2
+import time
+import pickle
+import re
+
+import numpy as np
 import lasagne
 import theano.tensor as T
 import theano
-import time
-import pickle
-from generate_fbanks import read_alignment
+
+import abnet2
 
 
-wav_dir = 'data/wav'
-alignment_file = 'data/alignment.txt'
-
-def read_alignment():
+def read_alignment(alignment_file='data/alignment.txt'):
+    ''' read the alignement file in format ... 
+    
+    the function will return 
+    
+    labels: dictionary with the phoneme as a key
+            and the values the element number
+    
+    alignments: list 
+    '''
     labels = set()
     alignments = {}
-    import re
     with open(alignment_file) as fin:
         for line in fin:
             splitted = line.split()
@@ -28,6 +41,7 @@ def read_alignment():
 
 
 def stack_fbanks(features, n):
+    '''stack filter banks'''
     assert n % 2 == 1, 'number of stacked frames must be odd'
     dim = features.shape[1]
     pad = np.zeros((n/2, dim), dtype=features.dtype)
@@ -37,6 +51,7 @@ def stack_fbanks(features, n):
     return np.reshape(np.swapaxes(aux, 0, 1), (-1, dim * n))
 
 def load_data():
+    '''load the alignment file and the precomputed filterbanks for this experiment'''
     labels, alignments = read_alignment()
     y = []
     fbanks = np.load('data/fbanks.npz')
@@ -52,11 +67,12 @@ def load_data():
     X = np.concatenate(stacked_fbanks, axis=0)
     y = np.concatenate(y, axis=0)
     X = (X - np.mean(X)) / np.std(X)
-    print X.shape
-    print y.shape
+    print('shape X = {} \t \t shape y = {}'.format(X.shape, y.shape))
     return X, y
 
 def mdelta(X):
+    ''' split data in train and test datatsets '''
+    # TODO: use instead sklearn train_test_split, see http://goo.gl/haLYso 
     X_train1, X_train2, X_val1, X_val2 = np.vstack((X[:-5001], X[:-5100])), np.vstack((X[1:-5000], X[100:-5000])), np.vstack((X[-5000:-1], X[-5000:-100])), np.vstack((X[-4999:], X[-4900:]))
     y_train, y_val = np.concatenate((np.ones((X.shape[0]-5001,), dtype='int32'), np.zeros((X.shape[0]-5100,), dtype='int32'))), np.concatenate((np.ones((4999), dtype='int32'), np.zeros((4900,), dtype='int32')))
 
@@ -64,8 +80,9 @@ def mdelta(X):
 
 
 def test_phone_classifier():
+    '''Test abnet2 '''
     X, y = load_data()
-    print np.max(y)+1
+    print('max_y={}'.format(y.max()+1))
     nnet = abnet2.Classifier_Nnet([X.shape[1], 200, np.max(y)+1], [0.1, 0.2])
     X_train, X_val = X[:-5000], X[5000:]
     y_train, y_val = y[:-5000], y[5000:]
@@ -90,3 +107,4 @@ if __name__ == '__main__':
         print np.shape(X[f])
         embs = nnet.evaluate(X[f])
         np.save('embs/'+f, embs)
+
