@@ -115,7 +115,7 @@ def train(data_train, data_val, train_fn, val_fn, network, max_epochs=100, patie
         except:
             if eval_fn != None:
                 acc = eval_fn(*data_val)
-            print("  validation accuracy:\t\t{:.2f} %".format(acc))
+                print("  validation accuracy:\t\t{:.2f} %".format(acc))
 
     return best_model, run
 
