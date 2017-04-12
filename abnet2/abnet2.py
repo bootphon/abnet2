@@ -77,6 +77,7 @@ def train(data_train, data_val, train_fn, val_fn, network, max_epochs=100, patie
 
     run = []
     best_model = None
+    best_epoch = None
     if patience <= 0:
         patience = max_epochs
     patience_val = 0
@@ -97,6 +98,7 @@ def train(data_train, data_val, train_fn, val_fn, network, max_epochs=100, patie
             best_val = val_err
             patience_val = 0
             best_model = layers.get_all_param_values(network)
+            best_epoch = epoch
         else:
             patience_val += 1
             if patience_val > patience:
@@ -117,7 +119,7 @@ def train(data_train, data_val, train_fn, val_fn, network, max_epochs=100, patie
                 acc = eval_fn(*data_val)
                 print("  validation accuracy:\t\t{:.2f} %".format(acc))
 
-    return best_model, run
+    return best_model, best_epoch, run
 
 
 class Classifier_Nnet(object):
@@ -295,12 +297,12 @@ class ABnet(object):
         def val_batch(batch_data):
             return self.val_fn(*batch_data)
 
-        best_weights, run = train(
+        best_weights, best_epoch, run = train(
             [X_train1, X_train2, y_train], [X_val1, X_val2, y_val],
             train_batch, val_batch,
             self.network, max_epochs=max_epochs, patience=patience)
         layers.set_all_param_values(self.network, best_weights)
-        return run
+        return run, epoch
 
     def evaluate(self, X_test):
         embs = []
