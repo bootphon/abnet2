@@ -302,7 +302,7 @@ class ABnet(object):
             train_batch, val_batch,
             self.network, max_epochs=max_epochs, patience=patience)
         layers.set_all_param_values(self.network, best_weights)
-        return run, epoch
+        return run, best_epoch
 
     def evaluate(self, X_test):
         embs = []
